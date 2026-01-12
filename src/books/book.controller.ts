@@ -1,11 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res } from '@nestjs/common'
 import type { Request, Response } from 'express'
-import { BookService, IBook } from './book.service'
-
-export class GetBooksQueryDto {
-  page?: number
-  pageCount?: number
-}
+import { BookService } from './book.service'
+import { IBook } from './interfaces'
+import { CreateBookDto, GetBooksQueryDto } from './dto/create-book.dto'
 
 export class HeadersDto {
   authorization: string
@@ -29,12 +26,12 @@ export class BooksController {
   }
 
   @Post()
-  addBook(@Body() body: Pick<IBook, 'cost' | 'title'>) {
+  addBook(@Body() body: CreateBookDto) {
     return this.bookService.create(body)
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.bookService.delete(id)
+    return this.bookService.remove(id)
   }
 }
