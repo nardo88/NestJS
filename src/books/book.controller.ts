@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { BookService } from './book.service'
-import { IBook } from './interfaces'
 import { CreateBookDto, GetBooksQueryDto } from './dto/create-book.dto'
+import { BookDocument } from './schemas/books.schema'
 
 export class HeadersDto {
   authorization: string
@@ -13,16 +13,18 @@ export class BooksController {
   constructor(private readonly bookService: BookService) {}
 
   @Get()
-  getList(@Query() query: GetBooksQueryDto): IBook[] {
+  async getList(@Query() query: GetBooksQueryDto): Promise<BookDocument[]> {
     const page = query.page ?? 1
     const pageCount = query.pageCount ?? 2
-    return this.bookService.getAll(pageCount, page)
+    return await this.bookService.getAll(pageCount, page)
   }
 
   @Get(':id')
-  getOneBook(@Req() req: Request, @Res() res: Response) {
+  async getOneBook(@Req() req: Request, @Res() res: Response) {
     const { id } = req.params
-    return res.json(this.bookService.getById(id))
+    const data = await this.bookService.getById(id)
+    if (!data) res.sendStatus(404)
+    return res.json(data)
   }
 
   @Post()
