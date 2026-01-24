@@ -1,6 +1,6 @@
 import { UsersDocument } from './../user/schemas/user.schema'
 import { Controller, HttpStatus, HttpException, Post, Req } from '@nestjs/common'
-import { ApiOperation } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { SigninDTO } from './dto/signin.dto'
 import { InjectModel } from '@nestjs/mongoose'
 import { Users } from '../user/schemas/user.schema'
@@ -41,7 +41,8 @@ export class AuthController {
 
   @Post('signup')
   @ApiOperation({ summary: 'Регистрация' })
-  async signup(@Req() req: Request<Record<string, never>, object, SignupDTO>) {
+  @ApiResponse({ status: 200, type: Users })
+  async signup(@Req() req: Request<Record<string, never>, object, SignupDTO>): Promise<{ userId: string }> {
     const { email, password, name } = req.body
 
     if (!email.trim() || !password?.trim() || !name?.trim()) {
@@ -67,6 +68,6 @@ export class AuthController {
       roles: ['user'],
     })
 
-    return { user }
+    return { userId: user._id }
   }
 }
