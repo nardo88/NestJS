@@ -46,6 +46,7 @@ export class Users {
     example: 1718951425162,
     type: Number,
   })
+  @Prop({ type: Number })
   createdAt: number
 
   @ApiProperty({
@@ -53,15 +54,8 @@ export class Users {
     example: 1718951425162,
     type: Number,
   })
+  @Prop({ type: Number })
   updatedAt: number
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users)
-
-UsersSchema.path('createdAt', Number)
-UsersSchema.path('updatedAt', Number)
-
-// и говорим, как генерировать время
-UsersSchema.set('timestamps', {
-  currentTime: () => Date.now(),
-})

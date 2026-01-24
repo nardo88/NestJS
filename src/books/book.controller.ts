@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { BookService } from './book.service'
 import { CreateBookDto, GetBooksQueryDto } from './dto/create-book.dto'
 import { BookDocument, Books } from './schemas/books.schema'
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { JWTAuthGuard } from 'src/auth/guards/jwt.auth.guard'
 
 export class HeadersDto {
   authorization: string
@@ -47,6 +48,7 @@ export class BooksController {
   @ApiOperation({ summary: 'Создание книги' })
   @ApiResponse({ status: 201, type: Books })
   @Post()
+  @UseGuards(JWTAuthGuard)
   addBook(@Body() body: CreateBookDto) {
     return this.bookService.create(body)
   }
