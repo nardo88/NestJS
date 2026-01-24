@@ -10,7 +10,10 @@ import { JWTAuthGuard } from './guards/jwt.auth.guard'
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtService, JWTAuthGuard],
-  imports: [UsersModule, MongooseModule.forFeature([{ name: Sessions.name, schema: SessionSchema }])],
+  imports: [
+    UsersModule, // Импортируем модуль с пользователями
+    MongooseModule.forFeature([{ name: Sessions.name, schema: SessionSchema }]),
+  ],
   exports: [JWTAuthGuard],
 })
 export class AuthModule {}

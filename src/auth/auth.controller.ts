@@ -15,7 +15,7 @@ import { createId } from 'src/helpers/createId'
 @Controller()
 export class AuthController {
   constructor(
-    @InjectModel(Users.name) private usersModel: Model<UsersDocument>,
+    @InjectModel(Users.name) private usersModel: Model<UsersDocument>, // делаем инъекцию модели Users
     private auth: AuthService
   ) {}
 
