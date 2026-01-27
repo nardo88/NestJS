@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { IsString } from 'class-validator'
 
 export class CreateBookDto {
+  @IsString({ message: 'Должно быть строкой' })
   @ApiProperty({ example: 'Война и мир', description: 'Название книги' })
   readonly title: string
   @ApiProperty({ example: 85, description: 'Цена' })

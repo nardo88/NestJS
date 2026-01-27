@@ -1,5 +1,5 @@
 import { UsersDocument } from './../user/schemas/user.schema'
-import { Controller, HttpStatus, HttpException, Post, Req } from '@nestjs/common'
+import { Controller, HttpStatus, HttpException, Post, Req, UsePipes, Body } from '@nestjs/common'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { SigninDTO } from './dto/signin.dto'
 import { InjectModel } from '@nestjs/mongoose'
@@ -11,6 +11,7 @@ import { AuthService } from './auth.service'
 import type { Request } from 'express'
 import { SignupDTO } from './dto/signup.dto'
 import { createId } from 'src/helpers/createId'
+import { ValidationPipe } from './pipe/signin.validator'
 
 @Controller()
 export class AuthController {
@@ -42,8 +43,9 @@ export class AuthController {
   @Post('signup')
   @ApiOperation({ summary: 'Регистрация' })
   @ApiResponse({ status: 200, type: Users })
-  async signup(@Req() req: Request<Record<string, never>, object, SignupDTO>): Promise<{ userId: string }> {
-    const { email, password, name } = req.body
+  @UsePipes(ValidationPipe)
+  async signup(@Body(new ValidationPipe()) signupDto: SignupDTO): Promise<{ userId: string }> {
+    const { email, password, name } = signupDto
 
     if (!email.trim() || !password?.trim() || !name?.trim()) {
       throw new HttpException('Переданы не валидные данные', HttpStatus.BAD_REQUEST)
