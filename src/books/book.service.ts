@@ -30,4 +30,9 @@ export class BookService {
     const result = await this.booksModel.findOneAndDelete({ _id: id })
     return !!result
   }
+
+  addCover(id: string, image: any) {
+    console.log('image: ', image)
+    return true
+  }
 }

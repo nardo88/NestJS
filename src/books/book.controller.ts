@@ -1,10 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req, Res, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { BookService } from './book.service'
 import { CreateBookDto, GetBooksQueryDto } from './dto/create-book.dto'
 import { BookDocument, Books } from './schemas/books.schema'
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { JWTAuthGuard } from 'src/auth/guards/jwt.auth.guard'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 
 export class HeadersDto {
   authorization: string
@@ -58,5 +73,15 @@ export class BooksController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.bookService.remove(id)
+  }
+
+  @ApiOperation({ summary: 'Добавление обложки для книги' })
+  @ApiResponse({ status: 200 })
+  @Post('/cover/:id')
+  @UseInterceptors(FileInterceptor('cover')) // Добавил FileInterceptor
+  addCover(@Param('id') id: string, @Body() body: { title: string }, @UploadedFile() cover: Express.Multer.File) {
+    console.log('body: ', body.title) // ВFormData можем получать доп поля
+    console.log('cover: ', cover) // Тут будет файл
+    return this.bookService.addCover(id, cover)
   }
 }
